@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>员工管理</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --success-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        h1 {
+            color: var(--dark-color);
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--light-color);
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(to right, var(--primary-color), var(--success-color));
+        }
+
+        h2 {
+            color: var(--dark-color);
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .menu-item a {
+            text-decoration: none;
+            color: var(--dark-color);
+            padding: 10px 20px;
+            border-radius: var(--border-radius);
+            background-color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .menu-item a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background-color: var(--light-color);
+        }
+
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(41, 128, 185, 0.3);
+        }
+
+        .btn-success {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #27ae60;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .error {
+            color: var(--danger-color);
+            margin: 15px 0;
+            padding: 12px;
+            background-color: rgba(231, 76, 60, 0.1);
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--danger-color);
+        }
+
+        .table-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--dark-color);
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            border-radius: var(--border-radius);
+            font-weight: 500;
+            text-decoration: none;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+        }
+
+        .btn-edit {
+            background-color: var(--warning-color);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-delete {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .search-btn {
+            grid-column: 1 / -1;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .search-btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(41, 128, 185, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 15px;
+            }
+
+            .search-form {
+                grid-template-columns: 1fr;
+            }
+
+            th, td {
+                padding: 10px;
+                font-size: 0.9em;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>员工管理系统</h1>
+
+    <div class="menu">
+        <div class="menu-item">
+            <a href="/api/room/list">房间管理</a>
+        </div>
+        <div class="menu-item">
+            <a href="/api/guest/search">客户管理</a>
+        </div>
+        <div class="menu-item">
+            <a href="/api/employee/list">员工管理</a>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>添加/修改员工</h2>
+        <form th:action="@{/api/employee/save}" method="post">
+            <input type="hidden" id="employeeId" name="employeeId" th:value="${employee?.employeeId}">
+
+            <div class="form-group">
+                <label for="name">员工姓名</label>
+                <input type="text" id="name" name="name" th:value="${employee?.name}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">电话号码</label>
+                <input type="text" id="phone" name="phone" th:value="${employee?.phone}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="idCard">身份证号</label>
+                <input type="text" id="idCard" name="idCard" th:value="${employee?.idCard}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="position">职位</label>
+                <select id="position" name="position" required>
+                    <option value="">-- 请选择职位 --</option>
+                    <option th:each="pos : ${positionOptions}"
+                            th:value="${pos}"
+                            th:text="${pos}"
+                            th:selected="${employee?.position == pos}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="salary">工资</label>
+                <input type="number" id="salary" name="salary" step="0.01" th:value="${employee?.salary}" required>
+            </div>
+
+            <button type="submit" class="btn btn-success">保存员工信息</button>
+        </form>
+    </div>
+
+    <div class="card">
+        <h2>员工搜索</h2>
+        <form class="search-form" th:action="@{/api/employee/search}" method="get">
+            <div class="form-group">
+                <label for="searchId">员工ID</label>
+                <input type="text" id="searchId" name="employeeId">
+            </div>
+
+            <div class="form-group">
+                <label for="searchName">员工姓名</label>
+                <input type="text" id="searchName" name="name">
+            </div>
+
+            <div class="form-group">
+                <label for="searchPosition">职位</label>
+                <select id="searchPosition" name="position">
+                    <option value="">-- 所有职位 --</option>
+                    <option th:each="pos : ${positionOptions}"
+                            th:value="${pos}"
+                            th:text="${pos}"></option>
+                </select>
+            </div>
+
+            <button type="submit" class="search-btn">搜索员工</button>
+        </form>
+    </div>
+
+    <div th:if="${error}" class="error" th:text="${error}"></div>
+
+    <h2>员工列表</h2>
+    <div class="table-container">
+        <table>
+            <thead>
+            <tr>
+                <th>员工ID</th>
+                <th>姓名</th>
+                <th>电话</th>
+                <th>身份证</th>
+                <th>职位</th>
+                <th>工资</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="emp : ${employees}">
+                <td th:text="${emp.employeeId}"></td>
+                <td th:text="${emp.name}"></td>
+                <td th:text="${emp.phone}"></td>
+                <td th:text="${emp.idCard}"></td>
+                <td th:text="${emp.position}"></td>
+                <td th:text="${'¥' + #numbers.formatDecimal(emp.salary, 1, 2)}"></td>
+                <td>
+                    <div class="action-buttons">
+                        <a th:href="@{/api/employee/edit/{id}(id=${emp.employeeId})}" class="btn-sm btn-edit">编辑</a>
+                        <a th:href="@{/api/employee/delete/{id}(id=${emp.employeeId})}"
+                           onclick="return confirm('确定要删除此员工吗？')"
+                           class="btn-sm btn-delete">删除</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+</html>

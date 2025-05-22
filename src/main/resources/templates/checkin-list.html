@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>入住管理</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+  <style>
+    .status-badge {
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .status-checked-in {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .status-checked-out {
+      background-color: #cce5ff;
+      color: #004085;
+    }
+    .status-cancelled {
+      background-color: #e2e3e5;
+      color: #383d41;
+    }
+    .search-card {
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.05);
+    }
+    .table-responsive {
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .table thead th {
+      background-color: #f8f9fa;
+      border-bottom-width: 1px;
+    }
+    .action-btn {
+      padding: 5px 10px;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container-fluid py-4">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">酒店管理系统</a>
+      <div class="navbar-nav">
+        <a class="nav-link" th:classappend="${#request.getRequestURI().endsWith('/current')} ? 'active'"
+           href="/api/checkin/current">当前入住</a>
+        <a class="nav-link" th:classappend="${#request.getRequestURI().endsWith('/list')} ? 'active'"
+           href="/api/checkin/list">所有记录</a>
+        <a class="nav-link" href="/api/checkin/add">新增入住</a>
+        <a class="nav-link" href="/api/room/list">房间管理</a>
+        <a class="nav-link" href="/api/guest/search">客户管理</a>
+      </div>
+    </div>
+  </nav>
+
+  <h2 class="mb-4" th:text="${#request.getRequestURI().endsWith('/current')} ? '当前入住记录' : '所有入住记录'"></h2>
+
+  <div class="card search-card mb-4">
+    <div class="card-body">
+      <h5 class="card-title">搜索入住记录</h5>
+      <form th:action="@{/api/checkin/search}" method="get">
+        <div class="row g-3">
+          <div class="col-md-6 col-lg-3">
+            <label for="guestName" class="form-label">客户姓名</label>
+            <input type="text" class="form-control" id="guestName" name="guestName"
+                   th:value="${param.guestName}" placeholder="输入客户姓名">
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <label for="idCard" class="form-label">身份证号</label>
+            <input type="text" class="form-control" id="idCard" name="idCard"
+                   th:value="${param.idCard}" placeholder="输入身份证号">
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <label for="phone" class="form-label">电话号码</label>
+            <input type="text" class="form-control" id="phone" name="phone"
+                   th:value="${param.phone}" placeholder="输入电话号码">
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <label for="roomNumber" class="form-label">房间号</label>
+            <input type="text" class="form-control" id="roomNumber" name="roomNumber"
+                   th:value="${param.roomNumber}" placeholder="输入房间号">
+          </div>
+          <div class="col-md-6 col-lg-3">
+            <label for="status" class="form-label">状态</label>
+            <select class="form-select" id="status" name="status">
+              <option value="">所有状态</option>
+              <option value="CHECKED_IN" th:selected="${param.status == 'CHECKED_IN'}">已入住</option>
+              <option value="CHECKED_OUT" th:selected="${param.status == 'CHECKED_OUT'}">已退房</option>
+              <option value="CANCELLED" th:selected="${param.status == 'CANCELLED'}">已取消</option>
+            </select>
+          </div>
+          <div class="col-md-6 col-lg-3 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary me-2">
+              <i class="bi bi-search"></i> 搜索
+            </button>
+            <a href="/api/checkin/list" class="btn btn-outline-secondary">重置</a>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>客户姓名</th>
+        <th>身份证号</th>
+        <th>电话</th>
+        <th>房间号</th>
+        <th>入住日期</th>
+        <th>退房日期</th>
+        <th>状态</th>
+        <th>押金</th>
+        <th>总金额</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="checkIn : ${checkIns}">
+        <td th:text="${checkIn.id}"></td>
+        <td th:text="${checkIn.guestName}"></td>
+        <td th:text="${checkIn.idCard}"></td>
+        <td th:text="${checkIn.phone}"></td>
+        <td th:text="${checkIn.roomNumber}"></td>
+        <td th:text="${#temporals.format(checkIn.startDate, 'yyyy-MM-dd')}"></td>
+        <td th:text="${#temporals.format(checkIn.endDate, 'yyyy-MM-dd')}"></td>
+        <td>
+            <span th:classappend="'status-badge status-' + ${checkIn.status.toLowerCase().replace('_', '-')}"
+                  th:text="${checkIn.status == 'CHECKED_IN' ? '已入住' :
+                          (checkIn.status == 'CHECKED_OUT' ? '已退房' : '已取消')}">
+            </span>
+        </td>
+        <td th:text="${'¥' + #numbers.formatDecimal(checkIn.deposit, 1, 2)}"></td>
+        <td th:text="${'¥' + #numbers.formatDecimal(checkIn.totalAmount, 1, 2)}"></td>
+        <td class="d-flex gap-2">
+          <a th:if="${checkIn.status == 'CHECKED_IN'}"
+             th:href="@{/api/checkin/checkout/{id}(id=${checkIn.id})}"
+             class="btn btn-sm btn-outline-primary action-btn">
+            <i class="bi bi-box-arrow-right"></i> 退房
+          </a>
+          <a th:href="@{/api/checkin/delete/{id}(id=${checkIn.id})}"
+             onclick="return confirm('确定要删除此记录吗？')"
+             class="btn btn-sm btn-outline-danger action-btn">
+            <i class="bi bi-trash"></i> 删除
+          </a>
+        </td>
+      </tr>
+      <tr th:if="${checkIns.empty}">
+        <td colspan="11" class="text-center text-muted py-4">没有找到入住记录</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>客户管理</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1, h2 {
+      color: #2c3e50;
+      font-weight: 600;
+    }
+
+    h1 {
+      margin-bottom: 25px;
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 10px;
+    }
+
+    h2 {
+      margin: 30px 0 20px;
+      font-size: 1.5em;
+    }
+
+    .menu {
+      display: flex;
+      margin-bottom: 30px;
+      gap: 10px;
+      background-color: #fff;
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .menu-item a {
+      text-decoration: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 6px;
+      background-color: #3498db;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .menu-item a:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .search-form {
+      margin: 30px 0;
+      padding: 25px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      max-width: 600px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    input[type="text"], input[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 16px;
+      transition: border 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      border-color: #3498db;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+
+    input[type="submit"] {
+      background-color: #3498db;
+      color: white;
+      border: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .error {
+      color: #e74c3c;
+      margin: 15px 0;
+      padding: 10px;
+      background-color: #fadbd8;
+      border-radius: 4px;
+      border-left: 4px solid #e74c3c;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 30px 0;
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: #3498db;
+      color: white;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    tr:hover {
+      background-color: #f1f5f9;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+
+    .action-buttons a {
+      text-decoration: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .action-buttons a:first-child {
+      background-color: #3498db;
+      color: white;
+    }
+
+    .action-buttons a:last-child {
+      background-color: #e74c3c;
+      color: white;
+    }
+
+    .action-buttons a:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .action-buttons a:first-child:hover {
+      background-color: #2980b9;
+    }
+
+    .action-buttons a:last-child:hover {
+      background-color: #c0392b;
+    }
+
+    .add-button {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #2ecc71;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      margin-top: 20px;
+    }
+
+    .add-button:hover {
+      background-color: #27ae60;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>客户管理</h1>
+
+  <div class="menu">
+    <div class="menu-item">
+      <a href="/api/room/list">房间管理</a>
+    </div>
+    <div class="menu-item">
+      <a href="/api/guest/search">客户管理</a>
+    </div>
+    <div class="menu-item">
+      <a href="/api/employee/list">员工管理</a>
+    </div>
+  </div>
+
+  <h2>客户搜索</h2>
+  <form class="search-form" th:action="@{/api/guest/search}" method="get">
+    <div class="form-group">
+      <label for="id">客户ID:</label>
+      <input type="text" id="id" name="id">
+    </div>
+    <div class="form-group">
+      <label for="name">客户姓名:</label>
+      <input type="text" id="name" name="name">
+    </div>
+    <div class="form-group">
+      <label for="phone">电话号码:</label>
+      <input type="text" id="phone" name="phone">
+    </div>
+    <div class="form-group">
+      <label for="idCard">身份证号:</label>
+      <input type="text" id="idCard" name="idCard">
+    </div>
+    <input type="submit" value="搜索">
+  </form>
+
+  <div th:if="${error}" class="error" th:text="${error}"></div>
+
+  <h2>客户列表</h2>
+  <table>
+    <thead>
+    <tr>
+      <th>客户ID</th>
+      <th>姓名</th>
+      <th>电话</th>
+      <th>身份证号</th>
+      <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="guest : ${guests}">
+      <td th:text="${guest.guestId}"></td>
+      <td th:text="${guest.guestName}"></td>
+      <td th:text="${guest.guestPhone}"></td>
+      <td th:text="${guest.idCard}"></td>
+      <td class="action-buttons">
+        <a th:href="@{/api/guest/edit/{id}(id=${guest.guestId})}">编辑</a>
+        <a th:href="@{/api/guest/delete/{id}(id=${guest.guestId})}"
+           onclick="return confirm('确定要删除此客户吗？')">删除</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <a href="/api/guest/add" class="add-button">添加新客户</a>
+</div>
+</body>
+</html>

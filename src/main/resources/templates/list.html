@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>服务记录管理</title>
+  <style>
+    :root {
+      --primary-color: #3498db;
+      --secondary-color: #2980b9;
+      --success-color: #2ecc71;
+      --danger-color: #e74c3c;
+      --warning-color: #f39c12;
+      --light-color: #ecf0f1;
+      --dark-color: #2c3e50;
+      --border-radius: 8px;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f5f7fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    h1 {
+      color: var(--dark-color);
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--light-color);
+      position: relative;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(to right, var(--primary-color), var(--success-color));
+    }
+
+    h2 {
+      color: var(--dark-color);
+      margin: 30px 0 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark-color);
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea {
+      width: 100%;
+      padding: 12px;
+      box-sizing: border-box;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+
+    .btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(41, 128, 185, 0.3);
+    }
+
+    .btn-success {
+      background-color: var(--success-color);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background-color: #27ae60;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+    }
+
+    .btn-danger {
+      background-color: var(--danger-color);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: #c0392b;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+    }
+
+    .table-container {
+      background-color: white;
+      border-radius: var(--border-radius);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: var(--dark-color);
+      text-transform: uppercase;
+      font-size: 0.85em;
+      letter-spacing: 0.5px;
+    }
+
+    tr:hover {
+      background-color: #f8f9fa;
+    }
+
+    .back-link {
+      display: inline-block;
+      padding: 12px 25px;
+      background-color: white;
+      color: var(--dark-color);
+      text-decoration: none;
+      border-radius: var(--border-radius);
+      border: 1px solid #ddd;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .back-link:hover {
+      background-color: var(--light-color);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      text-decoration: none;
+      font-size: 0.85em;
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 20px 15px;
+      }
+
+      th, td {
+        padding: 10px;
+        font-size: 0.9em;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+        gap: 5px;
+      }
+
+      .btn, .back-link {
+        width: 100%;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>服务记录管理</h1>
+
+  <div class="card">
+    <h2>添加新服务记录</h2>
+    <form th:action="@{/api/service/add}" th:object="${newServiceRecord}" method="post">
+      <div class="form-group">
+        <label for="employeeId">员工ID</label>
+        <input type="number" id="employeeId" th:field="*{employeeId}" required>
+      </div>
+      <div class="form-group">
+        <label for="employeeName">员工姓名</label>
+        <input type="text" id="employeeName" th:field="*{employeeName}" required>
+      </div>
+      <div class="form-group">
+        <label for="roomNumber">房间号</label>
+        <input type="text" id="roomNumber" th:field="*{roomNumber}" required>
+      </div>
+      <div class="form-group">
+        <label for="serviceContent">服务内容</label>
+        <textarea id="serviceContent" th:field="*{serviceContent}" required></textarea>
+      </div>
+      <button type="submit" class="btn btn-success">添加记录</button>
+    </form>
+  </div>
+
+  <h2>服务记录列表</h2>
+  <div class="table-container">
+    <table>
+      <thead>
+      <tr>
+        <th>ID</th>
+        <th>员工ID</th>
+        <th>员工姓名</th>
+        <th>房间号</th>
+        <th>服务内容</th>
+        <th>服务时间</th>
+        <th>操作</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="record : ${serviceRecords}">
+        <td th:text="${record.id}"></td>
+        <td th:text="${record.employeeId}"></td>
+        <td th:text="${record.employeeName}"></td>
+        <td th:text="${record.roomNumber}"></td>
+        <td th:text="${record.serviceContent}"></td>
+        <td th:text="${#temporals.format(record.serviceTime, 'yyyy-MM-dd HH:mm')}"></td>
+        <td>
+          <div class="action-buttons">
+            <a th:href="@{/api/service/delete/{id}(id=${record.id})}"
+               class="btn-sm btn-danger"
+               onclick="return confirm('确定要删除此服务记录吗？')">删除</a>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <a href="/api/guest/Main" class="back-link">返回主页面</a>
+  </div>
+</div>
+</body>
+</html>

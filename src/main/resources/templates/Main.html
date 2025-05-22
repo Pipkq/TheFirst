@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>宾馆管理系统</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f9fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 60px;
+            padding: 0 20px;
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 28px;
+            font-weight: 600;
+            position: relative;
+            padding-bottom: 15px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(to right, #3498db, #2ecc71);
+        }
+
+        .menu {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .menu-item a {
+            display: block;
+            text-decoration: none;
+            color: #34495e;
+            padding: 15px 20px;
+            border-radius: 8px;
+            background-color: white;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            border-left: 4px solid #3498db;
+        }
+
+        .menu-item a:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background-color: #f1f9fe;
+            border-left: 4px solid #2ecc71;
+        }
+
+        .menu-item:nth-child(2) a {
+            border-left-color: #e74c3c;
+        }
+
+        .menu-item:nth-child(2) a:hover {
+            border-left-color: #c0392b;
+            background-color: #fef1f1;
+        }
+
+        .menu-item:nth-child(3) a {
+            border-left-color: #f39c12;
+        }
+
+        .menu-item:nth-child(3) a:hover {
+            border-left-color: #d35400;
+            background-color: #fef9f1;
+        }
+
+        .menu-item:nth-child(4) a {
+            border-left-color: #9b59b6;
+        }
+
+        .menu-item:nth-child(4) a:hover {
+            border-left-color: #8e44ad;
+            background-color: #f9f1fe;
+        }
+
+        .menu-item:nth-child(5) a {
+            border-left-color: #1abc9c;
+        }
+
+        .menu-item:nth-child(5) a:hover {
+            border-left-color: #16a085;
+            background-color: #f1fdf9;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>宾馆管理系统</h1>
+
+    <div class="menu">
+        <div class="menu-item">
+            <a href="/api/room/list">房间管理</a>
+        </div>
+        <div class="menu-item">
+            <a href="/api/guest/search">客户管理</a>
+        </div>
+        <div class="menu-item">
+            <a href="/api/employee/list">员工管理</a>
+        </div>
+        <div class="menu-item">
+            <a href="/api/checkin/current">入住管理</a>
+        </div>
+        <div class="menu-item">
+            <a href="/api/service/list">服务记录管理</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
